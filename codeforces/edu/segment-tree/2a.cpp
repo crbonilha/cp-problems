@@ -1,3 +1,7 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+using ll = long long;
 
 template <class T>
 class SegmentTree {
@@ -76,3 +80,66 @@ public:
         return query(1, 1, size, l, r);
     }
 };
+
+int main() {
+    class Node {
+    public:
+        ll val;
+        ll maxSeg;
+        ll maxPref, maxSuf, sum;
+
+        Node operator+(const Node& other) {
+            Node ans;
+            ans.val = 0;
+            ans.maxSeg = max({
+                this -> maxSeg,
+                other.maxSeg,
+                this -> maxSuf + other.maxPref
+            });
+            ans.maxPref = max({
+                this -> maxPref,
+                this -> sum + other.maxPref
+            });
+            ans.maxSuf = max({
+                other.maxSuf,
+                this -> maxSuf + other.sum
+            });
+            ans.sum = this -> sum + other.sum;
+            return ans;
+        }
+    };
+
+    int n, q;
+    scanf("%d %d", &n, &q);
+    vector<Node> v(n);
+    for(int i=0; i<n; i++) {
+        scanf("%lld", &v[i].val);
+
+        if(v[i].val > 0) {
+            v[i].maxSeg = v[i].val;
+            v[i].maxPref = v[i].val;
+            v[i].maxSuf = v[i].val;
+        }
+        v[i].sum = v[i].val;
+    }
+
+    SegmentTree<Node> st(n, v, Node());
+
+    printf("%lld\n", st.query(1, n).maxSeg);
+    while(q--) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+
+        Node node = Node();
+        node.val = b;
+        if(b > 0) {
+            node.maxSeg = b;
+            node.maxPref = b;
+            node.maxSuf = b;
+        }
+        node.sum = b;
+
+        st.update(a+1, node);
+        printf("%lld\n", st.query(1, n).maxSeg);
+    }
+}

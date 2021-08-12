@@ -1,3 +1,5 @@
+#include <bits/stdc++.h>
+using namespace std;
 
 template <class T>
 class SegmentTree {
@@ -76,3 +78,34 @@ public:
         return query(1, 1, size, l, r);
     }
 };
+
+int main() {
+    class Node {
+    public:
+        int val;
+
+        Node operator+(const Node& other) {
+            Node ans;
+            return ans;
+        }
+    };
+
+    int n, q;
+    scanf("%d %d", &n, &q);
+    vector<Node> v(n);
+    for(int i=0; i<n; i++) {
+        scanf("%d", &v[i].val);
+    }
+
+    SegmentTree<Node> st(n, v, Node());
+
+    while(q--) {
+        int a, b;
+        scanf("%d %d", &a, &b);
+
+        if(a == 1) {
+        }
+        else {
+        }
+    }
+}
