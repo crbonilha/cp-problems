@@ -78,21 +78,27 @@ public:
         return query(1, 1, size, l, r);
     }
 
-    int customQuery(int idx, int l, int r, int k) {
+    int customQuery(int idx, int l, int r, int k, int least) {
+        if(node[idx].val < k) {
+            return 0;
+        }
+        if(r < least) {
+            return 0;
+        }
+
         if(l == r) {
             return l;
         }
 
         int mid = (l+r)/2;
-        if(node[idx*2].val > k) {
-            return customQuery(idx*2, l, mid, k);
+        int ans = customQuery(idx*2, l, mid, k, least);
+        if(ans == 0) {
+            ans = customQuery(idx*2+1, mid+1, r, k, least);
         }
-        else {
-            return customQuery(idx*2+1, mid+1, r, k-node[idx*2].val);
-        }
+        return ans;
     }
-    int customQuery(int k) {
-        return customQuery(1, 1, size, k);
+    int customQuery(int k, int least) {
+        return customQuery(1, 1, size, k, least);
     }
 };
 
@@ -103,7 +109,7 @@ int main() {
 
         Node operator+(const Node& other) {
             Node ans;
-            ans.val = this -> val + other.val;
+            ans.val = max(this -> val, other.val);
             return ans;
         }
     };
@@ -118,15 +124,15 @@ int main() {
     SegmentTree<Node> st(n, v, Node());
 
     while(q--) {
-        int a, b;
-        scanf("%d %d", &a, &b);
+        int a, b, c;
+        scanf("%d %d %d", &a, &b, &c);
 
         if(a == 1) {
-            v[b].val = 1 - v[b].val;
+            v[b].val = c;
             st.update(b+1, v[b]);
         }
         else {
-            printf("%d\n", st.customQuery(b)-1);
+            printf("%d\n", st.customQuery(b, c+1)-1);
         }
     }
 }
